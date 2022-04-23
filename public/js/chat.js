@@ -9,3 +9,5 @@ document.querySelector('#message-form').addEventListener('submit', (e) => {
     socket.emit('sendMessage', message)
     console.log(message)
 })
+
+//commit
