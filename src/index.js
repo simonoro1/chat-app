@@ -18,11 +18,18 @@ app.use(express.static(publicDirectoryPath))
 // })
 
 io.on('connection', (socket) => {
-    console.log('a user connected')
-    socket.emit('chat message', 'Welcome')
+    console.log('A user connected')
+
+    socket.emit('chat message', 'Welcome!')
+
+    socket.broadcast.emit('chat message', 'A user has joined!')
 
     socket.on('sendMessage', (message)=> {
         io.emit('message',message)
+    })
+
+    socket.on('location', (latitude, longitude) => {
+        io.emit('location', latitude, longitude)
     })
 
 
