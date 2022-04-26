@@ -24,8 +24,9 @@ io.on('connection', (socket) => {
 
     socket.broadcast.emit('chat message', 'A user has joined!')
 
-    socket.on('sendMessage', (message)=> {
-        io.emit('message',message)
+    socket.on('sendMessage', (message, callback)=> {
+        io.emit('chat message',message)
+        callback()
     })
 
     socket.on('location', (latitude, longitude) => {

@@ -1,15 +1,37 @@
 const socket = io() 
 
+//Elements
+
+const $messageForm =   document.querySelector('#message-form')
+const $messageFormInput = $messageForm.querySelector('input')
+const $messageFormButton = $messageForm.querySelector('button')
+const $messages = document.querySelector('#messages')
+
+
+
+// Templates
+const messageTemplate = document.querySelector('#message-template').innerHTML
+
 socket.on('chat message', (message) => {
-    console.log(message) 
+    console.log(message)
+    const  html = Mustache.render(messageTemplate, {
+        message
+    })
+    $messages.insertAdjacentHTML('beforeend', html)
 })
 
 
-document.querySelector('#message-form').addEventListener('submit', (e) => {
+$messageForm.addEventListener('submit', (e) => {
     e.preventDefault()
-    const message = e.target.message.value
-    socket.emit('sendMessage', message)
-    console.log(message)
+
+    // $messageFormButton.setAttribute('disabled', 'disabled')
+    // disable
+
+    const message = e.target.elements.message.value
+
+    socket.emit('sendMessage', message, (error) => { 
+        console.log('Message Delivered')
+    })
 })
 
 
@@ -17,8 +39,10 @@ document.querySelector('#message-form').addEventListener('submit', (e) => {
 
 
 socket.on('location', (latitude, longitude) => {
-            console.log(latitude, longitude)
-        })
+
+    console.log(longitude, latitude)
+            
+})
 
 document.querySelector('#location').addEventListener('click', (e) => {
     e.preventDefault()
