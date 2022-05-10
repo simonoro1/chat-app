@@ -2,7 +2,7 @@ const path = require('path')
 const express = require('express')
 const http = require('http')
 const socketio = require('socket.io')
-
+const { generateMessage, generateLocation} = require('./utils/message')
 
 
 const app = express()
@@ -20,17 +20,23 @@ app.use(express.static(publicDirectoryPath))
 io.on('connection', (socket) => {
     console.log('A user connected')
 
-    socket.emit('chat message', 'Welcome!')
+    
+    
+    socket.on('join', ({username, room}) => {
+        socket.join(room)
+        socket.emit('chat message', generateMessage('Welcome!'))
+        socket.broadcast.to(room).emit('chat message', generateMessage(`${username} has joined!`))
 
-    socket.broadcast.emit('chat message', 'A user has joined!')
+    })
 
     socket.on('sendMessage', (message, callback)=> {
-        io.emit('chat message',message)
+        io.emit('chat message',generateMessage(message))
         callback()
     })
 
-    socket.on('location', (latitude, longitude) => {
-        io.emit('location', latitude, longitude)
+    socket.on('location', (cords, callback) => {
+        io.emit('location message', generateLocation(`https://google.com/maps?q=${cords.latitude},${cords.longitude}`))
+        callback()
     })
 
 
